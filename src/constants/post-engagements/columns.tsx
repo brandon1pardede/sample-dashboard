@@ -4,9 +4,10 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Checkbox } from "@/components/ui/checkbox";
 
+import { InstagramIcon } from "@/assets/icons/instagram";
+import { Messenger } from "@/assets/icons/messenger";
 import { DataTableColumnHeader } from "@/components/dashboard/data-table/data-table-column-header";
 import { DataTableRowActions } from "@/components/dashboard/data-table/data-table-row-actions";
-import { Facebook, Instagram } from "lucide-react";
 import { PostEngagement } from "./schema";
 
 export const columns: ColumnDef<PostEngagement>[] = [
@@ -35,13 +36,13 @@ export const columns: ColumnDef<PostEngagement>[] = [
   },
   {
     accessorKey: "platform",
-    header: ({ column }) => null,
+    header: () => null,
     cell: ({ row }) => (
       <div className="w-[80px]">
         {row.getValue("platform") === "instagram" ? (
-          <Instagram />
+          <InstagramIcon />
         ) : (
-          <Facebook />
+          <Messenger />
         )}
       </div>
     ),
@@ -55,9 +56,7 @@ export const columns: ColumnDef<PostEngagement>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2">
-          <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("name")}
-          </span>
+          <span className="max-w-[500px] truncate">{row.getValue("name")}</span>
         </div>
       );
     },

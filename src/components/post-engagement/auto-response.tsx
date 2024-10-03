@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "../ui/separator";
 
 export function AutoResponse() {
   const [commentType, setCommentType] = useState("static");
@@ -33,18 +34,22 @@ export function AutoResponse() {
   };
 
   return (
-    <div className="w-full max-w-3xl space-y-6 p-6 rounded-lg shadow">
+    <div className="w-full max-w-3xl space-y-6 p-6">
       <div className="flex items-center justify-between">
-        <Label htmlFor="auto-like" className="text-base font-normal">
+        <Label
+          htmlFor="auto-like"
+          className="text-sm text-muted-foreground font-normal"
+        >
           Enable To Automatically Like Comments
         </Label>
         <Switch id="auto-like" />
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Reply In Comments</h2>
+        <h2 className="text-sm font-semibold">Reply In Comments</h2>
+        <Separator />
         <div className="space-y-2">
-          <Label htmlFor="comment-type" className="text-base font-normal">
+          <Label htmlFor="comment-type" className="text-sm font-normal">
             Comment type
           </Label>
           <Select onValueChange={setCommentType} defaultValue={commentType}>
@@ -98,7 +103,7 @@ export function AutoResponse() {
         {commentType === "openai" && (
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="integration" className="text-base font-normal">
+              <Label htmlFor="integration" className="text-sm font-normal">
                 Select Integration
               </Label>
               <Select>
@@ -112,7 +117,7 @@ export function AutoResponse() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="assistance" className="text-base font-normal">
+              <Label htmlFor="assistance" className="text-sm font-normal">
                 Select Assistance
               </Label>
               <Select>

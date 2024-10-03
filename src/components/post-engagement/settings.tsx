@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Separator } from "../ui/separator";
 
 const emojis = [
   { name: "like", emoji: "👍" },
@@ -78,61 +80,75 @@ export function Settings() {
   };
 
   return (
-    <div className="w-full max-w-3xl space-y-6 p-6  rounded-lg shadow">
-      <div className="flex items-center justify-between">
-        <Label htmlFor="private-reply" className="text-base font-normal ">
-          Enable To Privately Reply To First-Level Comments Only
-        </Label>
-        <Switch id="private-reply" />
-      </div>
-      <div className="flex items-center justify-between">
-        <Label htmlFor="once-per-post" className="text-base font-normal ">
-          Send Message To The Same User Only Once Per Post
-        </Label>
-        <Switch id="once-per-post" />
+    <div className="w-full max-w-3xl space-y-6 p-6">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label
+            htmlFor="private-reply"
+            className="text-sm text-muted-foreground font-normal "
+          >
+            Enable To Privately Reply To First-Level Comments Only
+          </Label>
+          <Switch id="private-reply" />
+        </div>
+        <div className="flex items-center justify-between">
+          <Label
+            htmlFor="once-per-post"
+            className="text-sm text-muted-foreground font-normal "
+          >
+            Send Message To The Same User Only Once Per Post
+          </Label>
+          <Switch id="once-per-post" />
+        </div>
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Require a Post Reaction</h2>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {selectedReactions.map((reaction) => (
-            <KeywordTag
-              key={reaction}
-              keyword={
-                emojis.find((e) => e.name === reaction)?.emoji || reaction
-              }
-              onRemove={() => removeReaction(reaction)}
-            />
-          ))}
-        </div>
+        <h2 className="text-sm font-semibold">Require a Post Reaction</h2>
+        <Separator />
         <div
-          className="relative"
           onMouseEnter={() => setShowEmojis(true)}
           onMouseLeave={() => setShowEmojis(false)}
         >
-          {showEmojis && (
-            <div className="absolute bottom-full left-0 mb-2 flex space-x-2 bg-white p-2 rounded-lg shadow-md">
-              {emojis.map((emoji) => (
-                <button
-                  key={emoji.name}
-                  onClick={() => addReaction(emoji.name)}
-                  className="text-2xl hover:scale-110 transition-transform"
-                  aria-label={`Add ${emoji.name} reaction`}
-                >
-                  {emoji.emoji}
-                </button>
+          {!!selectedReactions.length && (
+            <div className={cn("flex flex-wrap gap-2")}>
+              {selectedReactions.map((reaction) => (
+                <KeywordTag
+                  key={reaction}
+                  keyword={
+                    emojis.find((e) => e.name === reaction)?.emoji || reaction
+                  }
+                  onRemove={() => removeReaction(reaction)}
+                />
               ))}
             </div>
           )}
-          <Button className="w-full">Require reaction</Button>
+          <div
+            className={cn(
+              "h-2 transition-[height] flex justify-center gap-2",
+              showEmojis && "h-16"
+            )}
+          >
+            {emojis.map((emoji) => (
+              <button
+                key={emoji.name}
+                onClick={() => addReaction(emoji.name)}
+                className={cn(
+                  "text-4xl hover:scale-110 opacity-0 transition-opacity",
+                  showEmojis && "opacity-100"
+                )}
+                aria-label={`Add ${emoji.name} reaction`}
+              >
+                {emoji.emoji}
+              </button>
+            ))}
+          </div>
         </div>
+        <Button className="w-full">Require reaction</Button>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">
-          Exclude Comments With These Keywords
-        </h2>
-        <div className="flex flex-wrap gap-2 mb-2">
+      <div>
+        <h2 className="text-sm">Exclude Comments With These Keywords</h2>
+        <div className="flex flex-wrap gap-2 my-2">
           {excludeKeywords.map((keyword, index) => (
             <KeywordTag
               key={index}
@@ -141,22 +157,27 @@ export function Settings() {
             />
           ))}
         </div>
-        <div className="flex space-x-2">
+        <div className="flex">
           <Input
             placeholder="Specify Keywords"
             value={newExcludeKeyword}
             onChange={(e) => setNewExcludeKeyword(e.target.value)}
-            className="flex-grow"
+            className="flex-grow rounded-tr-none rounded-br-none border-r-0"
           />
-          <Button onClick={() => addKeyword("exclude")}>Add Keyword</Button>
+          <Button
+            onClick={() => addKeyword("exclude")}
+            className="rounded-bl-none rounded-tl-none"
+          >
+            Add Keyword
+          </Button>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">
+      <div>
+        <h2 className="text-sm">
           Only Trigger For Comments With These Keywords
         </h2>
-        <div className="flex flex-wrap gap-2 mb-2">
+        <div className="flex flex-wrap gap-2 my-2">
           {triggerKeywords.map((keyword, index) => (
             <KeywordTag
               key={index}
@@ -165,48 +186,56 @@ export function Settings() {
             />
           ))}
         </div>
-        <div className="flex space-x-2">
+        <div className="flex">
           <Input
             placeholder="Specify Keywords"
             value={newTriggerKeyword}
             onChange={(e) => setNewTriggerKeyword(e.target.value)}
-            className="flex-grow"
+            className="flex-grow rounded-tr-none rounded-br-none border-r-0"
           />
-          <Button onClick={() => addKeyword("trigger")}>Add Keyword</Button>
+          <Button
+            onClick={() => addKeyword("trigger")}
+            className="rounded-bl-none rounded-tl-none"
+          >
+            Add Keyword
+          </Button>
         </div>
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">
+        <h2 className="text-sm font-semibold">
           Private Reply After Post Engagement
         </h2>
+        <Separator />
         <div className="space-y-2">
-          <Label htmlFor="message-type" className="text-base font-normal ">
-            Select message type
-          </Label>
-          <Select>
-            <SelectTrigger id="message-type" className="w-full">
-              <SelectValue placeholder="Flow" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="flow">Flow</SelectItem>
-              <SelectItem value="single-message">Single message</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="select-flow" className="text-base font-normal ">
-            Select flow
-          </Label>
-          <Select>
-            <SelectTrigger id="select-flow" className="w-full">
-              <SelectValue placeholder="Select a flow" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="welcome-message">Welcome message</SelectItem>
-              <SelectItem value="default-reply">Default reply</SelectItem>
-            </SelectContent>
-          </Select>
+          <div>
+            <Label htmlFor="message-type" className=" font-normal ">
+              Select message type
+            </Label>
+            <Select>
+              <SelectTrigger id="message-type" className="w-full">
+                <SelectValue placeholder="Flow" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="flow">Flow</SelectItem>
+                <SelectItem value="single-message">Single message</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="select-flow" className="font-normal ">
+              Select flow
+            </Label>
+            <Select>
+              <SelectTrigger id="select-flow" className="w-full">
+                <SelectValue placeholder="Select a flow" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="welcome-message">Welcome message</SelectItem>
+                <SelectItem value="default-reply">Default reply</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
-import { names, platforms } from "@/constants/dashboard/data";
+import { names, platforms } from "@/constants/post-engagements/data";
 import { DataTableViewOptions } from "./data-table-view-options";
 
 interface DataTableToolbarProps<TData> {

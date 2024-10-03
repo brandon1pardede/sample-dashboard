@@ -12,8 +12,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { postEngagementSchema } from "@/constants/dashboard/schema";
+import { postEngagementSchema } from "@/constants/post-engagements/schema";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -23,6 +24,15 @@ export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
   const postEngagement = postEngagementSchema.parse(row.original);
+
+  const pathname = usePathname();
+
+  const modifiedPath =
+    pathname.split("/").slice(0, 4).join("/") +
+    "/" +
+    postEngagement.id +
+    "/" +
+    "edit";
 
   return (
     <DropdownMenu>
@@ -36,7 +46,7 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <Link href={`/post-engagement/${postEngagement.id}`}>
+        <Link href={modifiedPath}>
           <DropdownMenuItem>Edit</DropdownMenuItem>
         </Link>
         <DropdownMenuItem>Rename</DropdownMenuItem>

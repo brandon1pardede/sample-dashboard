@@ -42,7 +42,10 @@ const config: Config = {
           foreground: "hsl(var(--destructive-foreground))",
         },
         border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
+        input: {
+          DEFAULT: "hsl(var(--input))",
+          bg: "hsl(var(--input-bg))",
+        },
         ring: "hsl(var(--ring))",
         chart: {
           "1": "hsl(var(--chart-1))",
