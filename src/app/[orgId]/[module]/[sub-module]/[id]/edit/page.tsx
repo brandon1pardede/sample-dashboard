@@ -26,7 +26,7 @@ export default function Page({
   );
 }
 
-export function Context({
+function Context({
   params,
 }: {
   params: { module: string; ["sub-module"]: string; id: string };
