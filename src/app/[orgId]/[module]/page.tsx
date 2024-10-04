@@ -20,7 +20,7 @@ function Page({ params: { module } }: { params: { module: string } }) {
 
       router.push(modifiedPath);
     }
-  }, [moduleSubNav, router]);
+  }, [moduleSubNav, pathname, router]);
 
   return <Layout module={module}>{navsHash[module].label} Module</Layout>;
 }

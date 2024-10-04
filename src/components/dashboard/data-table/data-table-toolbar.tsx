@@ -8,6 +8,12 @@ import { Input } from "@/components/ui/input";
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { names, platforms } from "@/constants/post-engagements/data";
 import { DataTableViewOptions } from "./data-table-view-options";
 
@@ -19,6 +25,12 @@ export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const handleBulkDelete = () => {
+    const selectedRows = table.getSelectedRowModel().rows;
+    // Logic to handle the bulk deletion, such as calling an API
+    console.log("Deleting rows:", selectedRows);
+  };
 
   return (
     <div className="flex items-center gap-2">
@@ -57,6 +69,22 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      {Object.keys(table.getState().rowSelection).length > 0 && (
+        <div className="flex items-center space-x-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size={"sm"}>
+                Bulk Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onClick={handleBulkDelete}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
       <DataTableViewOptions table={table} />
     </div>
   );

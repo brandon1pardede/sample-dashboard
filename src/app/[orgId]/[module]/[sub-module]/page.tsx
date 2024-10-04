@@ -11,7 +11,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PostEngagements } from "./post-engagements";
 
-export default async function Page({
+export default function Page({
   params,
 }: {
   params: { module: string; ["sub-module"]: string };
@@ -74,7 +74,7 @@ function SubModuleNavs({
             currentPath.split("/").slice(0, 3).join("/") + "/" + nav.key;
 
           return (
-            <Link href={modifiedPath}>
+            <Link href={modifiedPath} key={nav.key}>
               <Button
                 variant={subModule === nav.key ? "secondary" : "ghost"}
                 className="w-full justify-start px-4"

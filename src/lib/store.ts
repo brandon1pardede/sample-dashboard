@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import settingsSlice from "./features/settings/settings-slice";
 import autoResponseSlice from "./features/auto-response/auto-response-slice";
+import authSlice from "./features/auth/auth-slice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       settings: settingsSlice,
       autoResponse: autoResponseSlice,
+      auth: authSlice,
     },
   });
 };

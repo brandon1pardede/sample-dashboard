@@ -9,19 +9,19 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CircleDotDashed } from "lucide-react";
+import { useAppSelector } from "@/lib/hooks";
 
 export function Header() {
+  const { user, org } = useAppSelector((s) => s.auth);
+
   return (
     <header className="fixed w-full top-0 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6 z-10">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Avatar>
-          <AvatarImage
-            src="https://images.unsplash.com/photo-1634926878768-2a5b3c42f139?q=80&w=2200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="high-quality-avatar"
-          />
-          <AvatarFallback>BR</AvatarFallback>
+          <AvatarImage src={org.avatar} alt="high-quality-avatar" />
+          <AvatarFallback>{getNameAbbrv(org.displayName)}</AvatarFallback>
         </Avatar>
-        <span className="whitespace-nowrap">Proto Inc</span>
+        <span className="whitespace-nowrap">{org.displayName}</span>
       </nav>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <div className="ml-auto"></div>
@@ -40,13 +40,12 @@ export function Header() {
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" size="icon" className="rounded-full">
+            <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="w-8 h-8">
-                <AvatarImage
-                  src="https://images.unsplash.com/photo-1634926878768-2a5b3c42f139?q=80&w=2200&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="high-quality-avatar"
-                />
-                <AvatarFallback>BR</AvatarFallback>
+                <AvatarImage src={user.avatar} alt="high-quality-user-avatar" />
+                <AvatarFallback>
+                  {getNameAbbrv(user.displayName)}
+                </AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -60,4 +59,12 @@ export function Header() {
       </div>
     </header>
   );
+}
+
+function getNameAbbrv(name: string) {
+  return name
+    .split(" ")
+    .map((d) => d[0])
+    .filter(Boolean)
+    .join("");
 }

@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/tooltip";
 import { navs } from "@/constants/app";
 import { cn } from "@/lib/utils";
+import { Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,7 +27,7 @@ export function Aside({ module }: { module: string }) {
                 <Link
                   href={modifiedPath}
                   className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
+                    "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors md:h-8 md:w-8",
                     module === nav.key &&
                       "bg-secondary text-secondary-foreground"
                   )}
@@ -39,6 +40,20 @@ export function Aside({ module }: { module: string }) {
             </Tooltip>
           );
         })}
+      </nav>
+      <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-4">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link
+              href="#"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+            >
+              <Settings className="h-5 w-5" />
+              <span className="sr-only">Settings</span>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">Settings</TooltipContent>
+        </Tooltip>
       </nav>
     </aside>
   );
