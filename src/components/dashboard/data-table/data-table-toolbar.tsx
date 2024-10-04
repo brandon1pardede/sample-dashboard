@@ -69,6 +69,8 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+
+      <DataTableViewOptions table={table} />
       {Object.keys(table.getState().rowSelection).length > 0 && (
         <div className="flex items-center space-x-2">
           <DropdownMenu>
@@ -85,7 +87,6 @@ export function DataTableToolbar<TData>({
           </DropdownMenu>
         </div>
       )}
-      <DataTableViewOptions table={table} />
     </div>
   );
 }

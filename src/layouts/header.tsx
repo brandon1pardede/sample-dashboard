@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CircleDotDashed } from "lucide-react";
 import { useAppSelector } from "@/lib/hooks";
+import { CircleDotDashed } from "lucide-react";
 
 export function Header() {
   const { user, org } = useAppSelector((s) => s.auth);
@@ -21,7 +21,11 @@ export function Header() {
           <AvatarImage src={org.avatar} alt="high-quality-avatar" />
           <AvatarFallback>{getNameAbbrv(org.displayName)}</AvatarFallback>
         </Avatar>
-        <span className="whitespace-nowrap">{org.displayName}</span>
+        <a href={org.link} target="_blank">
+          <span className="whitespace-nowrap hover:underline">
+            {org.displayName}
+          </span>
+        </a>
       </nav>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <div className="ml-auto"></div>
