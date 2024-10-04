@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,8 +11,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { X } from "lucide-react";
+import {
+  addExcludeKeyword,
+  addReaction,
+  addTriggerKeyword,
+  removeExcludeKeyword,
+  removeReaction,
+  removeTriggerKeyword,
+  setEnablePrivateReply,
+  setFlow,
+  setMessage,
+  setMessageType,
+  setNewExcludeKeyword,
+  setNewTriggerKeyword,
+  setSendMessagePerUserOnce,
+  setShowEmojis,
+} from "@/lib/features/settings/settings-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 import { Separator } from "../ui/separator";
 
 const emojis = [
@@ -40,44 +56,20 @@ const KeywordTag = ({ keyword, onRemove }: KeywordTagProps) => (
 );
 
 export function Settings() {
-  const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
-  const [triggerKeywords, setTriggerKeywords] = useState<string[]>([]);
-  const [newExcludeKeyword, setNewExcludeKeyword] = useState("");
-  const [newTriggerKeyword, setNewTriggerKeyword] = useState("");
-  const [showEmojis, setShowEmojis] = useState(false);
-  const [selectedReactions, setSelectedReactions] = useState<string[]>([]);
-
-  const addKeyword = (keywordType: "exclude" | "trigger") => {
-    const keyword =
-      keywordType === "exclude" ? newExcludeKeyword : newTriggerKeyword;
-    if (keyword.trim()) {
-      if (keywordType === "exclude") {
-        setExcludeKeywords([...excludeKeywords, keyword.trim()]);
-        setNewExcludeKeyword("");
-      } else {
-        setTriggerKeywords([...triggerKeywords, keyword.trim()]);
-        setNewTriggerKeyword("");
-      }
-    }
-  };
-
-  const removeKeyword = (keywordType: "exclude" | "trigger", index: number) => {
-    if (keywordType === "exclude") {
-      setExcludeKeywords(excludeKeywords.filter((_, i) => i !== index));
-    } else {
-      setTriggerKeywords(triggerKeywords.filter((_, i) => i !== index));
-    }
-  };
-
-  const addReaction = (reaction: string) => {
-    if (!selectedReactions.includes(reaction)) {
-      setSelectedReactions([...selectedReactions, reaction]);
-    }
-  };
-
-  const removeReaction = (reaction: string) => {
-    setSelectedReactions(selectedReactions.filter((r) => r !== reaction));
-  };
+  const dispatch = useAppDispatch();
+  const {
+    excludeKeywords,
+    triggerKeywords,
+    newExcludeKeyword,
+    newTriggerKeyword,
+    showEmojis,
+    selectedReactions,
+    enablePrivateReply,
+    sendMessagePerUserOncePerPost,
+    flow,
+    message,
+    messageType,
+  } = useAppSelector((s) => s.settings);
 
   return (
     <div className="w-full max-w-3xl space-y-6 p-6">
@@ -89,7 +81,13 @@ export function Settings() {
           >
             Enable To Privately Reply To First-Level Comments Only
           </Label>
-          <Switch id="private-reply" />
+          <Switch
+            id="private-reply"
+            checked={enablePrivateReply}
+            onCheckedChange={(checked) => {
+              dispatch(setEnablePrivateReply(checked));
+            }}
+          />
         </div>
         <div className="flex items-center justify-between">
           <Label
@@ -98,7 +96,13 @@ export function Settings() {
           >
             Send Message To The Same User Only Once Per Post
           </Label>
-          <Switch id="once-per-post" />
+          <Switch
+            id="once-per-post"
+            checked={sendMessagePerUserOncePerPost}
+            onCheckedChange={(checked) => {
+              dispatch(setSendMessagePerUserOnce(checked));
+            }}
+          />
         </div>
       </div>
 
@@ -106,8 +110,8 @@ export function Settings() {
         <h2 className="text-sm font-semibold">Require a Post Reaction</h2>
         <Separator />
         <div
-          onMouseEnter={() => setShowEmojis(true)}
-          onMouseLeave={() => setShowEmojis(false)}
+          onMouseEnter={() => dispatch(setShowEmojis(true))}
+          onMouseLeave={() => dispatch(setShowEmojis(false))}
         >
           {!!selectedReactions.length && (
             <div className={cn("flex flex-wrap gap-2")}>
@@ -117,7 +121,7 @@ export function Settings() {
                   keyword={
                     emojis.find((e) => e.name === reaction)?.emoji || reaction
                   }
-                  onRemove={() => removeReaction(reaction)}
+                  onRemove={() => dispatch(removeReaction(reaction))}
                 />
               ))}
             </div>
@@ -131,7 +135,7 @@ export function Settings() {
             {emojis.map((emoji) => (
               <button
                 key={emoji.name}
-                onClick={() => addReaction(emoji.name)}
+                onClick={() => dispatch(addReaction(emoji.name))}
                 className={cn(
                   "text-4xl hover:scale-110 opacity-0 transition-opacity",
                   showEmojis && "opacity-100"
@@ -153,7 +157,7 @@ export function Settings() {
             <KeywordTag
               key={index}
               keyword={keyword}
-              onRemove={() => removeKeyword("exclude", index)}
+              onRemove={() => dispatch(removeExcludeKeyword(index))}
             />
           ))}
         </div>
@@ -161,11 +165,11 @@ export function Settings() {
           <Input
             placeholder="Specify Keywords"
             value={newExcludeKeyword}
-            onChange={(e) => setNewExcludeKeyword(e.target.value)}
+            onChange={(e) => dispatch(setNewExcludeKeyword(e.target.value))}
             className="flex-grow rounded-tr-none rounded-br-none border-r-0"
           />
           <Button
-            onClick={() => addKeyword("exclude")}
+            onClick={() => dispatch(addExcludeKeyword())}
             className="rounded-bl-none rounded-tl-none"
           >
             Add Keyword
@@ -182,7 +186,7 @@ export function Settings() {
             <KeywordTag
               key={index}
               keyword={keyword}
-              onRemove={() => removeKeyword("trigger", index)}
+              onRemove={() => dispatch(removeTriggerKeyword(index))}
             />
           ))}
         </div>
@@ -190,11 +194,11 @@ export function Settings() {
           <Input
             placeholder="Specify Keywords"
             value={newTriggerKeyword}
-            onChange={(e) => setNewTriggerKeyword(e.target.value)}
+            onChange={(e) => dispatch(setNewTriggerKeyword(e.target.value))}
             className="flex-grow rounded-tr-none rounded-br-none border-r-0"
           />
           <Button
-            onClick={() => addKeyword("trigger")}
+            onClick={() => dispatch(addTriggerKeyword())}
             className="rounded-bl-none rounded-tl-none"
           >
             Add Keyword
@@ -212,9 +216,12 @@ export function Settings() {
             <Label htmlFor="message-type" className=" font-normal ">
               Select message type
             </Label>
-            <Select>
+            <Select
+              value={messageType || undefined}
+              onValueChange={(value) => dispatch(setMessageType(value))}
+            >
               <SelectTrigger id="message-type" className="w-full">
-                <SelectValue placeholder="Flow" />
+                <SelectValue placeholder="Choose message type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="flow">Flow</SelectItem>
@@ -226,7 +233,10 @@ export function Settings() {
             <Label htmlFor="select-flow" className="font-normal ">
               Select flow
             </Label>
-            <Select>
+            <Select
+              value={flow || undefined}
+              onValueChange={(value) => dispatch(setFlow(value))}
+            >
               <SelectTrigger id="select-flow" className="w-full">
                 <SelectValue placeholder="Select a flow" />
               </SelectTrigger>
@@ -236,6 +246,25 @@ export function Settings() {
               </SelectContent>
             </Select>
           </div>
+          {messageType === "single-message" && (
+            <div>
+              <Label htmlFor="select-message" className="font-normal ">
+                Select message
+              </Label>
+              <Select
+                value={message || undefined}
+                onValueChange={(value) => dispatch(setMessage(value))}
+              >
+                <SelectTrigger id="select-message" className="w-full">
+                  <SelectValue placeholder="Select message" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="text-card-1">Text Card #1</SelectItem>
+                  <SelectItem value="text-card-2">Text Card #2</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
       </div>
     </div>

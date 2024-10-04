@@ -1,7 +1,6 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useState } from "react";
 
 import {
   Select,
@@ -15,22 +14,27 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  addStaticComment,
+  editStaticComment,
+  removeStaticComment,
+  setCommentType,
+  setEnableAutoLikeComments,
+} from "@/lib/features/auto-response/auto-response-slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { Separator } from "../ui/separator";
 
 export function AutoResponse() {
-  const [commentType, setCommentType] = useState("static");
-  const [staticComments, setStaticComments] = useState(["a1", "a2"]);
-  const [newComment, setNewComment] = useState("");
+  const dispatch = useAppDispatch();
+  const { commentType, staticComments, enableAutoLikeComments } =
+    useAppSelector((state) => state.autoResponse);
 
   const handleAddComment = () => {
-    if (newComment.trim()) {
-      setStaticComments([...staticComments, newComment.trim()]);
-      setNewComment("");
-    }
+    dispatch(addStaticComment());
   };
 
   const handleRemoveComment = (index: number) => {
-    setStaticComments(staticComments.filter((_, i) => i !== index));
+    dispatch(removeStaticComment(index));
   };
 
   return (
@@ -42,7 +46,13 @@ export function AutoResponse() {
         >
           Enable To Automatically Like Comments
         </Label>
-        <Switch id="auto-like" />
+        <Switch
+          id="auto-like"
+          checked={enableAutoLikeComments}
+          onCheckedChange={(value) =>
+            dispatch(setEnableAutoLikeComments(value))
+          }
+        />
       </div>
 
       <div className="space-y-4">
@@ -52,7 +62,10 @@ export function AutoResponse() {
           <Label htmlFor="comment-type" className="text-sm font-normal">
             Comment type
           </Label>
-          <Select onValueChange={setCommentType} defaultValue={commentType}>
+          <Select
+            onValueChange={(value) => dispatch(setCommentType(value))}
+            value={commentType}
+          >
             <SelectTrigger id="comment-type">
               <SelectValue placeholder="Select comment type" />
             </SelectTrigger>
@@ -67,7 +80,16 @@ export function AutoResponse() {
           <div className="space-y-4">
             {staticComments.map((comment, index) => (
               <div key={index} className="flex items-center space-x-2">
-                <Input value={comment} readOnly className="flex-grow" />
+                <Input
+                  value={comment}
+                  placeholder="Type your comment here"
+                  onChange={(e) =>
+                    dispatch(
+                      editStaticComment({ index, newComment: e.target.value })
+                    )
+                  }
+                  className="flex-grow"
+                />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -78,22 +100,6 @@ export function AutoResponse() {
                 </Button>
               </div>
             ))}
-            <div className="flex items-center space-x-2">
-              <Input
-                placeholder="Type your comment here"
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                className="flex-grow"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setNewComment("")}
-                className="text-gray-500 hover:text-red-500"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
             <Button onClick={handleAddComment} className="w-full">
               Add Comment
             </Button>
